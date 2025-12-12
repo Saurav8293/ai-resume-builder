@@ -38,6 +38,8 @@ function askNextQuestion(){
         addMessage("AI", questions[currentQuestionIndex].text);
     }else{
         addMessage("AI", "Thank you! I have collected all your details. Generating your resume...")
+        const resumeText=generateResumeText();
+        addMessage("AI", resumeText);
     }
 }
 
