@@ -2,6 +2,7 @@ const startBtn = document.getElementById('start-btn');
 const chatContainer = document.getElementById('chat-container');
 const userInput=document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
+const downloadBtn= document.getElementById('download-btn');
 let resumeData = {};
 const questions = [
     {key: "fullName", text: "what is your full name?"},
@@ -40,6 +41,7 @@ function askNextQuestion(){
         addMessage("AI", "Thank you! I have collected all your details. Generating your resume...")
         const resumeText=generateResumeText();
         addMessage("AI", resumeText);
+        downloadBtn.style.display="block";
     }
 }
 
