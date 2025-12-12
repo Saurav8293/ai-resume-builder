@@ -7,7 +7,13 @@ let resumeData = {};
 const questions = [
     {key: "fullName", text: "what is your full name?"},
     {key: "email", text: "what is your email address?"},
-    {key: "phone", text:"what is your phone number?"}
+    {key: "phone", text:"what is your phone number?"},
+    {key: "qualification1", text: "Select your Class X percentage", type:"dropdown", options: ["50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]},
+    {key: "qualification2", text: "Select your Class XII percentage", type:"dropdown", options: ["50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]},
+    {key: "qualification3", text: "Select your Graduation marks in CGPA", type:"dropdown", options: ["5-6 CGPA", "6-7 CGPA", "7-8 CGPA", "8-9 CGPA", "9-10 CGPA"]},
+    {key: "experience", text: "How much experience do you have", type:"dropdown", options: ["0-2 years", "3 years", "4 years", "more than 5 years"]},
+    {key: "skills", text: "please select the skills you have"},
+    {key: "role", text: "You are looking for which role?"}
 ];
 let currentQuestionIndex=0; // Which question we are currently asking, what question comes next, when the interview is finished
 
@@ -35,6 +41,31 @@ function handleUserResponse(){
 }
 
 function askNextQuestion(){
+    const currentQ= questions[currentQuestionIndex];
+
+    if(currentQ.type == "dropdown"){
+        // Hide text input, show dropdown
+        userInput.style.display = "none";
+        sendBtn.style.display = "none";
+        dropdown.style.display= "block";
+
+        // clear previous dropdown options
+        dropdown.innerHTML = "";
+
+        // Add options dynamically
+        currentQ.options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            dropdown.appendChild(opt);
+        });
+    }else{
+        // Normal text question
+        dropdown.style.display = "none";
+        userInput.style.display = "inline-block";
+        sendBtn.style.display = "inline-block";
+    }
+
     if (currentQuestionIndex < questions.length){
         addMessage("AI", questions[currentQuestionIndex].text);
     }else{
@@ -47,8 +78,61 @@ function askNextQuestion(){
 
 function generateResumeText(){
     return `
-    Full Name: ${resumeData.fullName}
-    Email: ${resumeData.email}
-    Phone: ${resumeData.phone}
+==== Personal Details ====
+Full Name: ${resumeData.fullName}
+Email: ${resumeData.email}
+Phone: ${resumeData.phone}
+
+==== Qualifications ====
+Class X: ${resumeData.qualification1}
+Class XII: ${resumeData.qualification2}
+Graduation: ${resumeData.qualification3}
+
+==== Experience ====
+Experience: ${resumeData.experience}
+
+==== Skills ====
+skills: ${resumeData.skills}
+
+==== Desired Role ====
+Role: ${resumeData.role}
+`;
+}
+
+
+downloadBtn.addEventListener('click', saveResume);
+
+function saveResume(){
+    const {jsPDF} = window.jspdf; //window.jspdf is the jsPDF library already loaded from CDN (script tag). // This line is using destructuring to extract the jsPDF class from the library.
+    const pdf=new jsPDF();
+
+    const resumeText= generateResumeText();
+    const lines = resumeText.split("\n")// .split("\n") cuts the resume into an array of lines.Because jsPDF text() can print an array of text lines automatically, each on a new line.
+
+    pdf.text(lines, 10, 10);
+    pdf.save("resume.pdf");
+}
+
+function generateCareerObjective() {
+    return ` 
+        Hi I am recenty graduated in I am actively looking for 
+        ${resumeData.role} role as I have ${resumeData.experience} years of experience in this field
     `;
 }
+
+
+dropdown.addEventListener("change", function (){
+    const answer = dropdown.value;
+
+    // show selected answer in chat
+    addMessage("User", answer);
+
+    // store the answer
+    resumeData[questions[currentQuestionIndex].key]= answer;
+
+    // move to the next question
+    currentQuestionIndex++; 
+
+    // Ask the next question
+    askNextQuestion();
+});
