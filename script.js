@@ -36,5 +36,15 @@ function handleUserResponse(){
 function askNextQuestion(){
     if (currentQuestionIndex < questions.length){
         addMessage("AI", questions[currentQuestionIndex].text);
+    }else{
+        addMessage("AI", "Thank you! I have collected all your details. Generating your resume...")
     }
+}
+
+function generateResumeText(){
+    return `
+    Full Name: ${resumeData.fullName}
+    Email: ${resumeData.email}
+    Phone: ${resumeData.phone}
+    `;
 }
