@@ -3,6 +3,12 @@ const chatContainer = document.getElementById('chat-container');
 const userInput=document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const downloadBtn= document.getElementById('download-btn');
+const dropdown = document.getElementById('dropdown');
+const searchInput= document.getElementById('search-input');
+const skillsButtonDiv= document.getElementById('skills-buttons');
+const skillsSection= document.getElementById("skills-section");
+const skillsDoneBtn= document.getElementById('skills-done-btn');
+
 let resumeData = {};
 const questions = [
     {key: "fullName", text: "what is your full name?"},
@@ -12,14 +18,18 @@ const questions = [
     {key: "qualification2", text: "Select your Class XII percentage", type:"dropdown", options: ["50-60%", "60-70%", "70-80%", "80-90%", "90-100%"]},
     {key: "qualification3", text: "Select your Graduation marks in CGPA", type:"dropdown", options: ["5-6 CGPA", "6-7 CGPA", "7-8 CGPA", "8-9 CGPA", "9-10 CGPA"]},
     {key: "experience", text: "How much experience do you have", type:"dropdown", options: ["0-2 years", "3 years", "4 years", "more than 5 years"]},
-    {key: "skills", text: "please select the skills you have"},
+    {key: "skills", text: "Select the Skills you have"},
     {key: "role", text: "You are looking for which role?"}
 ];
 let currentQuestionIndex=0; // Which question we are currently asking, what question comes next, when the interview is finished
 
+const allSkills=["C", "C++", "Java", "OOPs", "Data Structure", "HTML", "CSS", "JavaScript"];
+let selectedSkills=[];
+
 startBtn.addEventListener('click', startResumeBuilder);
 
 function startResumeBuilder(){
+    startBtn.style.display = "none" ;
     askNextQuestion();
 }
 
@@ -41,8 +51,16 @@ function handleUserResponse(){
 }
 
 function askNextQuestion(){
+    if(questions.length <= currentQuestionIndex ){
+        addMessage("AI", "Thank you! I have collected all your details. Generating your resume...")
+        const resumeText=generateResumeText();
+        // addMessage("AI", resumeText);
+        userInput.style.display="none";
+        sendBtn.style.display="none";
+        downloadBtn.style.display="block";
+        return;
+    }
     const currentQ= questions[currentQuestionIndex];
-
     if(currentQ.type == "dropdown"){
         // Hide text input, show dropdown
         userInput.style.display = "none";
@@ -65,15 +83,13 @@ function askNextQuestion(){
         userInput.style.display = "inline-block";
         sendBtn.style.display = "inline-block";
     }
-
-    if (currentQuestionIndex < questions.length){
-        addMessage("AI", questions[currentQuestionIndex].text);
-    }else{
-        addMessage("AI", "Thank you! I have collected all your details. Generating your resume...")
-        const resumeText=generateResumeText();
-        addMessage("AI", resumeText);
-        downloadBtn.style.display="block";
+    console.log("Tell me the value of currentQ.key? ", currentQ.key);
+    console.log("The value of current question index?", currentQuestionIndex);
+    if(currentQ.key === "skills"){
+        console.log("Is it working");
+        showUISkills();
     }
+    addMessage("AI", questions[currentQuestionIndex].text);
 }
 
 function generateResumeText(){
@@ -136,3 +152,61 @@ dropdown.addEventListener("change", function (){
     // Ask the next question
     askNextQuestion();
 });
+
+function showUISkills(){
+    userInput.style.display="none";
+    dropdown.style.display="none";
+    sendBtn.style.display="none";
+    // searchBtn.style.display="inline-block";
+    skillsSection.style.display="block";
+    searchInput.style.display = "block";
+    renderSkillButtons(allSkills);
+
+}
+
+skillsDoneBtn.addEventListener("click", () =>{
+    // Save skills
+    resumeData.skills=selectedSkills;
+    // show in chat
+    addMessage("User", selectedSkills.join(", "));
+    // Hide skills UI
+    skillsSection.style.display= "none";
+    searchInput.style.display = "none";
+    // move to the next question
+    currentQuestionIndex++;
+    askNextQuestion();
+});
+
+searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+
+    const filtered= allSkills.filter(skill =>
+        skill.toLowerCase().includes(query)
+    );
+    renderSkillButtons(filtered);
+});
+
+function renderSkillButtons(skillsArray){
+    skillsButtonDiv.innerHTML = "";
+
+    skillsArray.forEach(skill =>{
+        const btn = document.createElement("button");
+        btn.textContent = skill;
+
+        if( selectedSkills.includes(skill)){
+            btn.classList.add("selected");
+        }
+
+        btn.addEventListener("click", () => {
+            if (selectedSkills.includes(skill)){
+                selectedSkills = selectedSkills.filter(s => s !== skill);
+                btn.classList.remove("selected");
+            }else{
+                selectedSkills.push(skill);
+                btn.classList.add("selected");
+            }
+        });
+
+        skillsButtonDiv.appendChild(btn);
+    } );
+}

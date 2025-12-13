@@ -10,9 +10,18 @@
         <button id="start-btn">Start Resume Builder</button>
         <input type="text" id="user-input" placeholder="type your answer...">
         <select id="dropdown" style="display: none;"></select>
+        <input type="text" id="search-input" style="display: none;" placeholder="Type your skills">
         <button id="send-btn">Send</button>
         <button id="download-btn">Download pdf</button>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        
+        <div id="skills-section" style="display: none;">
+            <p>Select your skills:</p>
+            <div id="skills-buttons"></div>
+            <div id="selected-skills"></div>
+            <button id="skills-done-btn">Done</button>
+        </div>
+        
         <script src="script.js"></script>
     </body>
 </html>

@@ -1,3 +1,13 @@
 #download-btn{
     display: none;
 }
+#user-input{
+    display: none;
+}
+#send-btn{
+    display: none;
+}
+button.selected {
+    background-color: green;
+    color: white;
+}
