@@ -99,6 +99,9 @@ Full Name: ${resumeData.fullName}
 Email: ${resumeData.email}
 Phone: ${resumeData.phone}
 
+==== Career Objective ====
+${generateCareerObjective()}
+
 ==== Qualifications ====
 Class X: ${resumeData.qualification1}
 Class XII: ${resumeData.qualification2}
@@ -130,10 +133,17 @@ function saveResume(){
 }
 
 function generateCareerObjective() {
-    return ` 
-        Hi I am recenty graduated in I am actively looking for 
-        ${resumeData.role} role as I have ${resumeData.experience} years of experience in this field
-    `;
+    const role = resumeData.role;
+    const skills = resumeData.skills.slice(0,3).join(", ");
+    const experience = resumeData.experience;
+
+    const isFresher = experience.includes("0");
+
+    if(isFresher){
+        return `Motivated and enthusiastic candidate with strong skills in ${skills}, seeking an entry-level ${role} role to apply technical knowledge and grow professionally in a dynamic organization.`;
+    }else{
+        return `Results-driven ${role} with ${experience} of experience and expertise in ${skills}, aiming to contribute to high-impact projects and deliver scalable, high-quality solutions.`;
+    }
 }
 
 
