@@ -83,7 +83,7 @@ function askNextQuestion(){
         userInput.style.display="none";
         sendBtn.style.display="none";
         downloadBtn.style.display="block";
-        testBackendConnection();
+        testCareerObjectiveEndpoint();
         return;
     }
     const currentQ= questions[currentQuestionIndex];
@@ -393,13 +393,34 @@ function generateProjectDescription(projectName, techStack) {
 }
 
 
-async function testBackendConnection() {
+// async function testBackendConnection() {
+//     try{
+//         const response = await fetch("http://localhost:5000/test-api");
+//         const data = await response.json();
+//         addMessage("AI", "Backend says: " + data.message);
+//     } catch (error){
+//         addMessage("AI", "Backend connection failed");
+//         console.error(error);
+//     }
+// }
+
+async function testCareerObjectiveEndpoint(){
     try{
-        const response = await fetch("http://localhost:5000/test-api");
-        const data = await response.json();
-        addMessage("AI", "Backend says: " + data.message);
-    } catch (error){
-        addMessage("AI", "Backend connection failed");
-        console.error(error);
+        const response = await fetch("http://localhost:5000/generate-career-objective",
+            { 
+                method : ["POST"],
+                headers : {
+                    "content-type" : "apllication/json"
+                },
+                body : JSON.stringify({
+                    role: resumeData.role
+                })
+            
+            });
+        const text = await response.text();
+        addMessage("AI","Backend Respose: "+ text)
+    } catch(error){
+        addMessage("AI", "Failed to reach backend");
+        console.error(error)
     }
 }
