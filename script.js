@@ -83,6 +83,7 @@ function askNextQuestion(){
         userInput.style.display="none";
         sendBtn.style.display="none";
         downloadBtn.style.display="block";
+        testBackendConnection();
         return;
     }
     const currentQ= questions[currentQuestionIndex];
@@ -389,4 +390,16 @@ function generateProjectDescription(projectName, techStack) {
         `• Designed and implemented core features with focus on performance and usability`,
         `• Applied best practices in coding and system design`
     ];
+}
+
+
+async function testBackendConnection() {
+    try{
+        const response = await fetch("http://localhost:5000/test-api");
+        const data = await response.json();
+        addMessage("AI", "Backend says: " + data.message);
+    } catch (error){
+        addMessage("AI", "Backend connection failed");
+        console.error(error);
+    }
 }
