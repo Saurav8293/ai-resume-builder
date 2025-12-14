@@ -5,7 +5,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print("Gemini Key Loaded:", GEMINI_API_KEY is not None)
+
+import google.generativeai as genai
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel("gemini-pro")
+
 app = Flask(__name__)
 CORS(app)
 
