@@ -3,11 +3,14 @@ const chatContainer = document.getElementById('chat-container');
 const userInput=document.getElementById('user-input');
 const sendBtn = document.getElementById('send-btn');
 const downloadBtn= document.getElementById('download-btn');
+downloadBtn.disabled = true;
 const dropdown = document.getElementById('dropdown');
 const searchInput= document.getElementById('search-input');
 const skillsButtonDiv= document.getElementById('skills-buttons');
 const skillsSection= document.getElementById("skills-section");
 const skillsDoneBtn= document.getElementById('skills-done-btn');
+
+let aiCareerObjective = "";
 
 let resumeData = {};
 const questions = [
@@ -83,7 +86,11 @@ function askNextQuestion(){
         userInput.style.display="none";
         sendBtn.style.display="none";
         downloadBtn.style.display="block";
-        testCareerObjectiveEndpoint();
+        CareerObjectiveEndpoint().then( result =>{
+            aiCareerObjective = result;
+            addMessage("AI", "Career objective generated using AI.")
+            downloadBtn.disabled = false;
+        });
         return;
     }
     const currentQ= questions[currentQuestionIndex];
@@ -150,10 +157,12 @@ function saveResume(){
     y +=6;
     pdf.setFontSize(10);
     pdf.setFont(undefined, "normal");
-    pdf.text(generateCareerObjective(), 10, y, { maxWidth: 190, lineHeightFactor: 1.5});// lineHeightFactor will increases vertical spacing
+   const objectiveLines = pdf.splitTextToSize(aiCareerObjective, 190);
+    pdf.text(objectiveLines, 10, y);
+    y += objectiveLines.length * 6 + 6;
+    console.log("AI Objective:", aiCareerObjective);
 
  // ===== EXPERIENCE =====
-    y += 14;
     pdf.setFontSize(12);
     pdf.setFont(undefined, "bold");
     pdf.text("PROFESSIONAL EXPERIENCE", 10, y);
@@ -295,21 +304,6 @@ function saveResume(){
     pdf.save("resume.pdf");
 }
 
-function generateCareerObjective() {
-    const role = resumeData.role || "";
-    const skills = (resumeData.skills || []).slice(0,3).join(", ");
-    const duration = resumeData.expDuration || "";
-
-    const isFresher = duration.toLowerCase().includes("fresher") || duration.includes("0");
-
-    if (isFresher) {
-        return `Motivated and enthusiastic candidate with strong skills in ${skills}, seeking an entry-level ${role} role to apply technical knowledge and grow professionally in a dynamic organization.`;
-    } else {
-        return `Results-driven ${role} with professional experience at ${resumeData.expCompany}, specializing in ${skills}, and aiming to contribute to high-impact projects and scalable solutions.`;
-    }
-}
-
-
 dropdown.addEventListener("change", function (){
     const answer = dropdown.value;
 
@@ -404,23 +398,19 @@ function generateProjectDescription(projectName, techStack) {
 //     }
 // }
 
-async function testCareerObjectiveEndpoint(){
-    try{
+async function CareerObjectiveEndpoint(){
         const response = await fetch("http://localhost:5000/generate-career-objective",
             { 
-                method : ["POST"],
+                method : "POST",
                 headers : {
-                    "content-type" : "apllication/json"
+                    "content-type" : "application/json"
                 },
                 body : JSON.stringify({
-                    role: resumeData.role
+                    role: resumeData.role,
+                    skills: resumeData.skills,
+                    duration: resumeData.expDuration
                 })
-            
             });
-        const text = await response.text();
-        addMessage("AI","Backend Respose: "+ text)
-    } catch(error){
-        addMessage("AI", "Failed to reach backend");
-        console.error(error)
-    }
+        const data = await response.json();
+       return data.objective;
 }

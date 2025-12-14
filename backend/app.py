@@ -27,9 +27,34 @@ def test_api():
 
 @app.route("/generate-career-objective", methods=["POST"])
 def generate_career_objective():
-    data = request.json
-    role = data.get("role")
-    return f"Role Received: {role}"
+    data = request.get_json()
+    role = data.get("role", "")
+    skills = data.get("skills", [])
+    experience = data.get("duration", "")
+
+    prompt = f"""
+Write ONE single professional resume career objective.
+
+Role: {role}
+Skills: {", ".join(skills)}
+Experience: {experience}
+
+Rules:
+- ONLY one paragraph
+- 2 to 3 sentences
+- No headings
+- No options
+- No bullet points
+- No extra explanations
+- ATS friendly
+"""
+
+
+    response = model.generate_content(prompt)
+    objective = response.text
+    return jsonify({
+        "objective": objective
+    })
 
 @app.route("/gemini-test", methods= ["GET"])
 def gemini_test():
