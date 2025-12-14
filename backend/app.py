@@ -1,8 +1,11 @@
 from flask import Flask
 from flask import request, jsonify
 from flask_cors import CORS
-
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+print("Gemini Key Loaded:", GEMINI_API_KEY is not None)
 app = Flask(__name__)
 CORS(app)
 
