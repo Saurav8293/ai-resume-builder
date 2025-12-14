@@ -9,7 +9,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 import google.generativeai as genai
 
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-pro")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 app = Flask(__name__)
 CORS(app)
@@ -31,6 +31,10 @@ def generate_career_objective():
     role = data.get("role")
     return f"Role Received: {role}"
 
+@app.route("/gemini-test", methods= ["GET"])
+def gemini_test():
+    response = model.generate_content("Say Hello in one sentence like a professional AI assistant")
+    return response.text
 
 if __name__ == "__main__":
     app.run(debug=True)
