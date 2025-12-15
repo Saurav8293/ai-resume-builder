@@ -9,6 +9,7 @@ const searchInput= document.getElementById('search-input');
 const skillsButtonDiv= document.getElementById('skills-buttons');
 const skillsSection= document.getElementById("skills-section");
 const skillsDoneBtn= document.getElementById('skills-done-btn');
+const aiLoader = document.getElementById('ai-loader');
 
 let aiCareerObjective = "";
 
@@ -86,10 +87,13 @@ function askNextQuestion(){
         userInput.style.display="none";
         sendBtn.style.display="none";
         downloadBtn.style.display="block";
+        aiLoader.style.display = "flex";
+        downloadBtn.disabled = true;
         CareerObjectiveEndpoint().then( result =>{
             aiCareerObjective = result;
-            addMessage("AI", "Career objective generated using AI.")
+            aiLoader.style.display="none"
             downloadBtn.disabled = false;
+            addMessage("AI", "Career objective generated using AI.")
         });
         return;
     }
@@ -399,6 +403,7 @@ function generateProjectDescription(projectName, techStack) {
 // }
 
 async function CareerObjectiveEndpoint(){
+    try{
         const response = await fetch("http://localhost:5000/generate-career-objective",
             { 
                 method : "POST",
@@ -412,5 +417,12 @@ async function CareerObjectiveEndpoint(){
                 })
             });
         const data = await response.json();
-       return data.objective;
+        return data.objective;
+    }catch(error){
+        aiLoader.style.display= "none";
+        downloadBtn.disabled = false;
+        addMessage("AI", "AI generation failed. Using fallback text.");
+        return "Career objective not available."
+    }
+        
 }
