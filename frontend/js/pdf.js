@@ -1,5 +1,4 @@
 import { state } from "./state.js";
-import { ui } from "./ui.js";
 
 // saveResume is called from main.js via onclick binding
 export function saveResume() {

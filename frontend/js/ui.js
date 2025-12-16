@@ -1,5 +1,3 @@
-import { askQuestion } from "./chat.js";
-import { questions, state } from "./state.js";
 
 export const ui = {
     startBtn: document.getElementById('start-btn'),

@@ -30,10 +30,10 @@ function handleAnswer() {
 
 export async function askQuestion() {
     if (questions.length <= state.currentQuestionIndex) {
-        addMessage("AI", "Thank you! I have collected all your details. Generating your resume...")
+        addMessage("AI", "Thank you! I have collected all your details.")
         showLoader(true);
-        ui.sendBtn.disabled = true;
-        ui.userInput.disabled = true;
+        ui.userInput.style.display = "none";
+        ui.sendBtn.style.display = "none";
 
         state.aiCareerObjective = await generateCareerObjective({
             role: state.resumeData.role,
