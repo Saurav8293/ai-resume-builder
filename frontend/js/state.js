@@ -6,7 +6,8 @@ export const state = {
     project1: "",
     project2: ""
   },
-  selectedSkills: []
+  selectedSkills: [],
+  aiResponsibilities: [],
 };
 
 export const allSkills=["C", "C++", "Java", "OOPs", "Data Structure", "HTML", "CSS", "JavaScript"];

@@ -1,6 +1,6 @@
 import { ui, addMessage, showLoader } from "./ui.js";
 import { state, questions } from "./state.js";
-import { generateCareerObjective, generateProjectDescription } from "./aiService.js";
+import { generateCareerObjective, generateProjectDescription, generateResponsibilities } from "./aiService.js";
 import { showUISkills } from "./skills.js";
 
 export function initChat() {
@@ -40,6 +40,14 @@ export async function askQuestion() {
             skills: state.resumeData.skills,
             duration: state.resumeData.expDuration
         });
+
+        state.aiResponsibilities = await generateResponsibilities(
+            {
+                expCompany: state.resumeData.expCompany,
+                expRole: state.resumeData.expRole,
+                expDuration: state.resumeData.expDuration
+            }
+        );
 
         state.aiProjectDescriptions.project1 = await generateProjectDescription({
             projectName: state.resumeData.project1Name,

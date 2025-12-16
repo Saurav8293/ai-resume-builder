@@ -14,6 +14,19 @@ export async function generateCareerObjective(payload) {
   return data.objective;
 }
 
+export async function generateResponsibilities(payload){
+    const response = await fetch(`${BASE_URL}/generate-responsibilities`, {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+    return data.responsibilities;
+}
+
 export async function generateProjectDescription(payload) {
   const response = await fetch(`${BASE_URL}/generate-project-description`, {
     method: "POST",
@@ -26,3 +39,4 @@ export async function generateProjectDescription(payload) {
   const data = await response.json();
   return data.description;
 }
+

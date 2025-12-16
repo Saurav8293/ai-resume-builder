@@ -56,6 +56,38 @@ Rules:
         "objective": objective
     })
 
+@app.route("/generate-responsibilities", methods= ["POST"])
+def generate_responsibilities():
+    data = request.get_json()
+    prevCompanyName=data.get("expCompany", "")
+    role= data.get("expRole", "")
+    expDuration= data.get("expDuration", "")
+    
+    prompt = f"""
+    Generate professional resume responsibilities for work experience.
+
+    Company: {prevCompanyName}
+    Role: {role}
+    Experience Duration: {expDuration}
+
+    Rules:
+    - Exactly 3 bullet points
+    - Each bullet MUST start with a strong action verb
+    - Focus on real-world responsibilities, not projects
+    - Mention collaboration, development, problem-solving, or optimization
+    - ATS friendly
+    - No headings
+    - No explanations
+    - No emojis
+    - No numbering (only bullet points using •)
+    """
+
+    
+    response=model.generate_content(prompt)
+    responsibilities= response.text
+    return jsonify({
+        "responsibilities" : responsibilities
+    })
 
 @app.route("/generate-project-description", methods = ["POST"])
 def generate_project_description():
