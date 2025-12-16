@@ -56,6 +56,34 @@ Rules:
         "objective": objective
     })
 
+
+@app.route("/generate-project-description", methods = ["POST"])
+def generate_project_description():
+    data = request.get_json()
+    projectName = data.get("projectName", "")
+    techSkills = data.get("projectTech", [])
+    
+    prompt = f"""
+Generate professional resume project bullet points.
+
+Project Name: {projectName}
+Technologies: {", ".join(techSkills)}
+
+Rules:
+- Exactly 2 bullet points
+- Each bullet starts with an action verb
+- Focus on impact and skills
+- ATS friendly
+- No headings
+- No explanations    
+"""
+
+    response = model.generate_content(prompt)
+    description = response.text
+    return jsonify({
+        "description": description  
+    })
+
 @app.route("/gemini-test", methods= ["GET"])
 def gemini_test():
     response = model.generate_content("Say Hello in one sentence like a professional AI assistant")
