@@ -1,6 +1,6 @@
 import { ui, addMessage, showLoader } from "./ui.js";
-import { state, questions } from "./state.js";
-import { generateCareerObjective, generateProjectDescription, generateResponsibilities } from "./aiService.js";
+import { state, questions, allResumeData } from "./state.js";
+import { generateCareerObjective, generateProjectDescription, generateResponsibilities, generateResumeSections, requestToServer } from "./aiService.js";
 import { showUISkills } from "./skills.js";
 
 export function initChat() {
@@ -35,32 +35,38 @@ export async function askQuestion() {
         ui.userInput.style.display = "none";
         ui.sendBtn.style.display = "none";
 
-        state.aiCareerObjective = await generateCareerObjective({
-            role: state.resumeData.role,
-            skills: state.resumeData.skills,
-            duration: state.resumeData.expDuration
-        });
+        // state.aiCareerObjective = await generateCareerObjective({
+        //     role: state.resumeData.role,
+        //     skills: state.resumeData.skills,
+        //     duration: state.resumeData.expDuration
+        // });
 
-        state.aiResponsibilities = await generateResponsibilities(
-            {
-                expCompany: state.resumeData.expCompany,
-                expRole: state.resumeData.expRole,
-                expDuration: state.resumeData.expDuration
-            }
+        // state.aiResponsibilities = await generateResponsibilities(
+        //     {
+        //         expCompany: state.resumeData.expCompany,
+        //         expRole: state.resumeData.expRole,
+        //         expDuration: state.resumeData.expDuration
+        //     }
+        // );
+
+        // state.aiProjectDescriptions.project1 = await generateProjectDescription({
+        //     projectName: state.resumeData.project1Name,
+        //     projectTech: state.resumeData.project1Tech
+        // });
+
+        // // Generate project2 description if it exists
+        // if (state.resumeData.project2Name) {
+        //     state.aiProjectDescriptions.project2 = await generateProjectDescription({
+        //         projectName: state.resumeData.project2Name,
+        //         projectTech: state.resumeData.project2Tech
+        //     });
+        // }
+
+        state.responseFromServer = await generateResumeSections(
+            allResumeData()
         );
+        console.log("what is present in responseFromServer?=> ", state.responseFromServer);
 
-        state.aiProjectDescriptions.project1 = await generateProjectDescription({
-            projectName: state.resumeData.project1Name,
-            projectTech: state.resumeData.project1Tech
-        });
-
-        // Generate project2 description if it exists
-        if (state.resumeData.project2Name) {
-            state.aiProjectDescriptions.project2 = await generateProjectDescription({
-                projectName: state.resumeData.project2Name,
-                projectTech: state.resumeData.project2Tech
-            });
-        }
 
         showLoader(false);
         addMessage("AI", "Resume ready! Click the button below to download.");

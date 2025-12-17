@@ -1,8 +1,10 @@
 // aiService.js
+import { API_ENDPOINTS } from "./config";
+
 const BASE_URL = "http://localhost:5000";
 
-export async function generateCareerObjective(payload) {
-  const response = await fetch(`${BASE_URL}/generate-career-objective`, {
+export async function generateResumeSections(payload){
+  const response=await fetch(`${BASE_URL}${API_ENDPOINTS.GENERATE_RESUME_SECTIONS}`,{
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -11,32 +13,46 @@ export async function generateCareerObjective(payload) {
   });
 
   const data = await response.json();
-  return data.objective;
+  return data
+
 }
 
-export async function generateResponsibilities(payload){
-    const response = await fetch(`${BASE_URL}/generate-responsibilities`, {
-        method: "POST",
-        headers: {
-            "Content-type": "application/json"
-        },
-        body: JSON.stringify(payload)
-    });
+// export async function generateCareerObjective(payload) {
+//   const response = await fetch(`${BASE_URL}/generate-career-objective`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(payload)
+//   });
 
-    const data = await response.json();
-    return data.responsibilities;
-}
+//   const data = await response.json();
+//   return data.objective;
+// }
 
-export async function generateProjectDescription(payload) {
-  const response = await fetch(`${BASE_URL}/generate-project-description`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+// export async function generateResponsibilities(payload){
+//     const response = await fetch(`${BASE_URL}/generate-responsibilities`, {
+//         method: "POST",
+//         headers: {
+//             "Content-type": "application/json"
+//         },
+//         body: JSON.stringify(payload)
+//     });
 
-  const data = await response.json();
-  return data.description;
-}
+//     const data = await response.json();
+//     return data.responsibilities;
+// }
+
+// export async function generateProjectDescription(payload) {
+//   const response = await fetch(`${BASE_URL}/generate-project-description`, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(payload)
+//   });
+
+//   const data = await response.json();
+//   return data.description;
+// }
 
