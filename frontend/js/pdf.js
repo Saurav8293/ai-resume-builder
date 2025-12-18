@@ -6,28 +6,15 @@ export function saveResume() {
     
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 15;
+    const margin = 12;  // Reduced from 15
     const maxWidth = pageWidth - (margin * 2);
-    const bottomMargin = 20; // Reserve space at bottom
+    const bottomMargin = 12;
     
     let y = margin;
     
-    // Helper: Calculate text height
-    function getTextHeight(text, fontSize, indent = 0) {
-        if (!text) return 0;
-        pdf.setFontSize(fontSize);
-        const lines = pdf.splitTextToSize(text, maxWidth - indent);
-        return lines.length * fontSize * 0.45;
-    }
-    
-    // Helper: Check if content fits on current page
-    function canFitOnPage(requiredHeight) {
-        return (y + requiredHeight) <= (pageHeight - bottomMargin);
-    }
-    
-    // Helper: Add new page if needed
-    function checkPageBreak(requiredHeight) {
-        if (!canFitOnPage(requiredHeight)) {
+    // Check if we need a new page
+    function checkSpace(needed) {
+        if (y + needed > pageHeight - bottomMargin) {
             pdf.addPage();
             y = margin;
             return true;
@@ -35,7 +22,7 @@ export function saveResume() {
         return false;
     }
     
-    // Helper: Add text
+    // Add text with wrapping
     function addText(text, fontSize = 10, fontStyle = "normal", indent = 0) {
         if (!text) return;
         
@@ -43,185 +30,180 @@ export function saveResume() {
         pdf.setFont(undefined, fontStyle);
         
         const lines = pdf.splitTextToSize(text, maxWidth - indent);
-        const lineHeight = fontSize * 0.45;
+        const lineHeight = fontSize * 0.4;  // Tighter line height
         
-        pdf.text(lines, margin + indent, y);
-        y += lines.length * lineHeight;
+        for (let line of lines) {
+            checkSpace(lineHeight + 2);
+            pdf.text(line, margin + indent, y);
+            y += lineHeight;
+        }
     }
     
-    function addSpace(amount = 5) {
+    function addSpace(amount) {
         y += amount;
     }
     
-    // Helper: Add section with heading (keeps heading + content together)
-    function addSection(heading, contentHeight, renderContent) {
-        const headingHeight = 15; // Heading + underline + spacing
-        const totalHeight = headingHeight + contentHeight;
+    // Add section heading
+    function addSectionHeading(heading) {
+        checkSpace(12);
+        addSpace(5);
         
-        // If section doesn't fit, move to next page
-        checkPageBreak(totalHeight);
-        
-        // Add section heading
-        addSpace(8);
-        pdf.setFontSize(12);
+        pdf.setFontSize(11);
         pdf.setFont(undefined, "bold");
         pdf.text(heading.toUpperCase(), margin, y);
-        y += 6;
+        y += 5;
         
-        pdf.setLineWidth(0.5);
+        pdf.setLineWidth(0.3);
         pdf.line(margin, y, pageWidth - margin, y);
-        y += 8;
-        
-        // Render section content
-        renderContent();
+        y += 4;
     }
     
     // ===== HEADER =====
-    pdf.setFontSize(20);
+    pdf.setFontSize(22);
     pdf.setFont(undefined, "bold");
     pdf.text(state.resumeData.fullName || "YOUR NAME", margin, y);
-    y += 8;
+    y += 7;
     
-    pdf.setFontSize(10);
+    pdf.setFontSize(9);
     pdf.setFont(undefined, "normal");
-    const contactInfo = `${state.resumeData.email || ""} | ${state.resumeData.phone || ""}`;
-    pdf.text(contactInfo, margin, y);
+    pdf.text(`${state.resumeData.email || ""} | ${state.resumeData.phone || ""}`, margin, y);
     y += 4;
     
+    pdf.setLineWidth(0.5);
     pdf.line(margin, y, pageWidth - margin, y);
     y += 2;
     
     // ===== CAREER OBJECTIVE =====
-    const objectiveHeight = getTextHeight(state.aiCareerObjective, 10) + 20;
-    addSection("Career Objective", objectiveHeight, () => {
-        addText(state.aiCareerObjective, 10, "normal");
-    });
+    if (state.aiCareerObjective) {
+        addSectionHeading("Career Objective");
+        addText(state.aiCareerObjective, 9.5);
+        addSpace(5);
+    }
     
     // ===== PROFESSIONAL EXPERIENCE =====
-    const expContentHeight = 
-        12 + // Role
-        8 +  // Company & duration
-        getTextHeight(state.aiResponsibilities, 10) + 
-        10;
-    
-    addSection("Professional Experience", expContentHeight, () => {
-        addText(state.resumeData.expRole, 11, "bold");
-        addSpace(4);
+    if (state.resumeData.expRole) {
+        addSectionHeading("Professional Experience");
         
-        pdf.setFontSize(10);
+        checkSpace(18);
+        addText(state.resumeData.expRole, 10, "bold");
+        addSpace(3);
+        
+        pdf.setFontSize(9);
         pdf.setFont(undefined, "italic");
-        pdf.text(`${state.resumeData.expCompany || ""}, ${state.resumeData.expCity || ""}`, margin, y);
+        const companyLine = `${state.resumeData.expCompany || ""}, ${state.resumeData.expCity || ""}`;
+        pdf.text(companyLine, margin, y);
         
-        const durationText = state.resumeData.expDuration || "";
-        const durationWidth = pdf.getTextWidth(durationText);
-        pdf.text(durationText, pageWidth - margin - durationWidth, y);
-        y += 7;
+        const duration = state.resumeData.expDuration || "";
+        const durWidth = pdf.getTextWidth(duration);
+        pdf.text(duration, pageWidth - margin - durWidth, y);
+        y += 6;
         
         if (state.aiResponsibilities) {
-            addText(state.aiResponsibilities, 10, "normal");
+            addText(state.aiResponsibilities, 9.5);
         }
-    });
+        addSpace(5);
+    }
     
     // ===== EDUCATION =====
-    const educationHeight = 
-        (12 + 6 + 8) * 3; // 3 education entries (degree, school, years)
+    addSectionHeading("Education");
     
-    addSection("Education", educationHeight, () => {
-        // Graduation
-        addText(state.resumeData.gradDegree, 11, "bold");
-        addSpace(3);
-        addText(state.resumeData.gradCollege, 10, "normal");
-        addSpace(3);
+    function addEducationEntry(degree, school, years, marks) {
+        if (!degree && !school) return;
         
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, "italic");
-        pdf.text(state.resumeData.gradYears || "", margin, y);
+        checkSpace(20);
         
-        const cgpaText = `CGPA: ${state.resumeData.gradCGPA || ""}`;
-        const cgpaWidth = pdf.getTextWidth(cgpaText);
-        pdf.text(cgpaText, pageWidth - margin - cgpaWidth, y);
-        y += 10;
+        if (degree) {
+            addText(degree, 10, "bold");
+            addSpace(2);
+        }
         
-        // Class XII
-        addText("Class XII (Higher Secondary)", 10, "bold");
-        addSpace(3);
-        addText(state.resumeData.class12School, 10, "normal");
-        addSpace(3);
+        if (school) {
+            addText(school, 9.5);
+            addSpace(2);
+        }
         
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, "italic");
-        pdf.text(state.resumeData.class12Years || "", margin, y);
-        
-        const marks12Text = `${state.resumeData.class12Marks || ""}%`;
-        const marks12Width = pdf.getTextWidth(marks12Text);
-        pdf.text(marks12Text, pageWidth - margin - marks12Width, y);
-        y += 10;
-        
-        // Class X
-        addText("Class X (Secondary School)", 10, "bold");
-        addSpace(3);
-        addText(state.resumeData.class10School, 10, "normal");
-        addSpace(3);
-        
-        pdf.setFontSize(10);
-        pdf.setFont(undefined, "italic");
-        pdf.text(state.resumeData.class10Years || "", margin, y);
-        
-        const marks10Text = `${state.resumeData.class10Marks || ""}%`;
-        const marks10Width = pdf.getTextWidth(marks10Text);
-        pdf.text(marks10Text, pageWidth - margin - marks10Width, y);
-        y += 6;
-    });
+        if (years || marks) {
+            pdf.setFontSize(9);
+            pdf.setFont(undefined, "italic");
+            pdf.text(years || "", margin, y);
+            
+            const marksWidth = pdf.getTextWidth(marks || "");
+            pdf.text(marks || "", pageWidth - margin - marksWidth, y);
+            y += 6;
+        }
+    }
+    
+    // Graduation
+    addEducationEntry(
+        state.resumeData.gradDegree,
+        state.resumeData.gradCollege,
+        state.resumeData.gradYears,
+        `CGPA: ${state.resumeData.gradCGPA || ""}`
+    );
+    
+    // Class XII
+    addEducationEntry(
+        "Class XII (Higher Secondary)",
+        state.resumeData.class12School,
+        state.resumeData.class12Years,
+        `${state.resumeData.class12Marks}%`
+    );
+    
+    // Class X
+    addEducationEntry(
+        "Class X (Secondary School)",
+        state.resumeData.class10School,
+        state.resumeData.class10Years,
+        `${state.resumeData.class10Marks}%`
+    );
+    
+    addSpace(2);
     
     // ===== SKILLS =====
-    const skillsText = state.resumeData.skills?.join("  •  ") || "";
-    const skillsHeight = getTextHeight(skillsText, 10) + 10;
-    
-    addSection("Skills", skillsHeight, () => {
-        if (state.resumeData.skills && state.resumeData.skills.length > 0) {
-            addText(skillsText, 10, "normal");
-        }
-    });
+    if (state.resumeData.skills && state.resumeData.skills.length > 0) {
+        addSectionHeading("Skills");
+        const skillsText = state.resumeData.skills.join("  •  ");
+        addText(skillsText, 9.5);
+        addSpace(5);
+    }
     
     // ===== PROJECTS =====
-    const project1Height = 
-        12 + // Project name
-        getTextHeight(state.aiProjectDescriptions.project1, 10) + 
-        15;
-    
-    const project2Height = state.resumeData.project2Name ? 
-        12 + getTextHeight(state.aiProjectDescriptions.project2, 10) + 15 : 0;
-    
-    const totalProjectsHeight = project1Height + project2Height;
-    
-    addSection("Projects", totalProjectsHeight, () => {
-        // Project 1
-        addText(state.resumeData.project1Name, 11, "bold");
-        addSpace(5);
+    if (state.resumeData.project1Name || state.resumeData.project2Name) {
+        addSectionHeading("Projects");
         
-        if (state.aiProjectDescriptions.project1) {
-            addText(state.aiProjectDescriptions.project1, 10, "normal");
+        // Project 1
+        if (state.resumeData.project1Name) {
+            checkSpace(12);
+            addText(state.resumeData.project1Name, 10, "bold");
+            addSpace(3);
+            
+            if (state.aiProjectDescriptions.project1) {
+                addText(state.aiProjectDescriptions.project1, 9.5);
+            }
+            addSpace(6);
         }
         
-        // Project 2 (if exists)
+        // Project 2
         if (state.resumeData.project2Name) {
-            addSpace(10);
-            addText(state.resumeData.project2Name, 11, "bold");
-            addSpace(5);
+            checkSpace(12);
+            addText(state.resumeData.project2Name, 10, "bold");
+            addSpace(3);
             
             if (state.aiProjectDescriptions.project2) {
-                addText(state.aiProjectDescriptions.project2, 10, "normal");
+                addText(state.aiProjectDescriptions.project2, 9.5);
             }
         }
-    });
+    }
     
-    // Footer
+    // Footer (only if multiple pages)
     const totalPages = pdf.internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-        pdf.setPage(i);
-        pdf.setFontSize(8);
-        pdf.setTextColor(150, 150, 150);
-        pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+    if (totalPages > 1) {
+        for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(8);
+            pdf.setTextColor(150);
+            pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 7, { align: "center" });
+        }
     }
     
     pdf.save("resume.pdf");
