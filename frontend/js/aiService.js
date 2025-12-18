@@ -1,7 +1,7 @@
 // aiService.js
 import { API_ENDPOINTS } from "./config.js";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "https://ai-resume-builder-z3ct.onrender.com";
 
 export async function generateRequestToServer(payload) {
   try {
