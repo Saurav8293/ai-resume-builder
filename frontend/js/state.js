@@ -53,31 +53,29 @@ export const questions = [
 ];
 
 export function allResumeData() {
-  return `
-  {
-    fullName: ${state.resumeData.fullName},
-    email: ${state.resumeData.email},
-    phone: ${state.resumeData.phone},
-    class10School: ${state.resumeData.class10School},
-    class10Years: ${state.resumeData.class10Years},
-    class10Marks: ${state.resumeData.class10Marks},
-    class12School: ${state.resumeData.class12School},
-    class12Years: ${state.resumeData.class12Years},
-    class12Marks: ${state.resumeData.class12Marks},
-    gradCollege: ${state.resumeData.gradCollege},
-    gradDegree: ${state.resumeData.gradDegree},
-    gradYears: ${state.resumeData.gradYears},
-    gradCGPA: ${state.resumeData.gradCGPA},
-    expCompany: ${state.resumeData.expCompany},
-    expRole: ${state.resumeData.expRole},
-    expCity: ${state.resumeData.expCity},
-    expDuration: ${state.resumeData.expDuration},
-    project1Name: ${state.resumeData.project1Name},
-    project1Tech: ${state.resumeData.project1Tech},
-    project2Name: ${state.resumeData.project2Name},
-    project2Tech: ${state.resumeData.project2Tech},
-    skills: ${state.resumeData.skills},
-    role: ${state.resumeData.role},
-  }
-  `
+  return {
+    fullName: state.resumeData.fullName,
+    email : state.resumeData.email,
+    phone: state.resumeData.phone,
+    class10School: state.resumeData.class10School,
+    class10Years: state.resumeData.class10Years,
+    class10Marks: state.resumeData.class10Marks,
+    class12School: state.resumeData.class12School,
+    class12Years: state.resumeData.class12Years,
+    class12Marks: state.resumeData.class12Marks,
+    gradCollege: state.resumeData.gradCollege,
+    gradDegree: state.resumeData.gradDegree,
+    gradYears: state.resumeData.gradYears,
+    gradCGPA: state.resumeData.gradCGPA,
+    expCompany: state.resumeData.expCompany,
+    expRole: state.resumeData.expRole,
+    expCity: state.resumeData.expCity,
+    expDuration: state.resumeData.expDuration,
+    project1Name: state.resumeData.project1Name,
+    project1Tech: state.resumeData.project1Tech,
+    project2Name: state.resumeData.project2Name,
+    project2Tech: state.resumeData.project2Tech,
+    skills: state.resumeData.skills,
+    role: state.resumeData.role,
+  };
 }

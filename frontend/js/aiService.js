@@ -1,20 +1,39 @@
 // aiService.js
-import { API_ENDPOINTS } from "./config";
+import { API_ENDPOINTS } from "./config.js";
 
 const BASE_URL = "http://localhost:5000";
 
-export async function generateResumeSections(payload){
-  const response=await fetch(`${BASE_URL}${API_ENDPOINTS.GENERATE_RESUME_SECTIONS}`,{
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+export async function generateRequestToServer(payload) {
+  try {
+    const response = await fetch(`${BASE_URL}${API_ENDPOINTS.GENERATE_RESUME_SECTIONS}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
 
-  const data = await response.json();
-  return data
+    // Check if response is OK (status 200-299)
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(
+        errorData.message || `Server error: ${response.status} ${response.statusText}`
+      );
+    }
 
+    const data = await response.json();
+    
+    // Check if result exists
+    if (!data.result) {
+      throw new Error("Invalid response format: missing 'result' field");
+    }
+    
+    return data.result;
+    
+  } catch (error) {
+    console.error("API request failed:", error);
+    throw error; // Re-throw so calling code can handle it
+  }
 }
 
 // export async function generateCareerObjective(payload) {

@@ -1,6 +1,6 @@
 import { ui, addMessage, showLoader } from "./ui.js";
 import { state, questions, allResumeData } from "./state.js";
-import { generateCareerObjective, generateProjectDescription, generateResponsibilities, generateResumeSections, requestToServer } from "./aiService.js";
+import { generateRequestToServer } from "./aiService.js";
 import { showUISkills } from "./skills.js";
 
 export function initChat() {
@@ -10,6 +10,7 @@ export function initChat() {
 }
 
 function start() {
+    console.log("Clicked");
     ui.startBtn.style.display = "none";
     askQuestion();
 }
@@ -35,39 +36,27 @@ export async function askQuestion() {
         ui.userInput.style.display = "none";
         ui.sendBtn.style.display = "none";
 
-        // state.aiCareerObjective = await generateCareerObjective({
-        //     role: state.resumeData.role,
-        //     skills: state.resumeData.skills,
-        //     duration: state.resumeData.expDuration
-        // });
-
-        // state.aiResponsibilities = await generateResponsibilities(
-        //     {
-        //         expCompany: state.resumeData.expCompany,
-        //         expRole: state.resumeData.expRole,
-        //         expDuration: state.resumeData.expDuration
-        //     }
-        // );
-
-        // state.aiProjectDescriptions.project1 = await generateProjectDescription({
-        //     projectName: state.resumeData.project1Name,
-        //     projectTech: state.resumeData.project1Tech
-        // });
-
-        // // Generate project2 description if it exists
-        // if (state.resumeData.project2Name) {
-        //     state.aiProjectDescriptions.project2 = await generateProjectDescription({
-        //         projectName: state.resumeData.project2Name,
-        //         projectTech: state.resumeData.project2Tech
-        //     });
-        // }
-
-        state.responseFromServer = await generateResumeSections(
+        state.responseFromServer = await generateRequestToServer(
             allResumeData()
         );
         console.log("what is present in responseFromServer?=> ", state.responseFromServer);
-
-
+        state.aiCareerObjective = state.responseFromServer.careerObjective;
+        state.aiResponsibilities = Array.isArray(state.responseFromServer.professionalExperience)
+            ? state.responseFromServer.professionalExperience.map(point => `• ${point}`).join('\n')
+            : state.responseFromServer.professionalExperience || "";
+        
+        const projects = state.responseFromServer.projects || {};
+        
+        // Convert project arrays to strings
+        state.aiProjectDescriptions.project1 = Array.isArray(projects.project1)
+            ? projects.project1.map(point => `• ${point}`).join('\n')
+            : projects.project1 || "";
+            
+        state.aiProjectDescriptions.project2 = Array.isArray(projects.project2)
+            ? projects.project2.map(point => `• ${point}`).join('\n')
+            : projects.project2 || "";
+        console.log("Converted project1:", state.aiProjectDescriptions.project1);
+        console.log("Converted project2:", state.aiProjectDescriptions.project2);
         showLoader(false);
         addMessage("AI", "Resume ready! Click the button below to download.");
 
