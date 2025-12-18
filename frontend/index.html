@@ -1,31 +1,488 @@
 <!DOCTYPE html>
-<html lang="eng">
-    <head>
-        <title>AI Resume Builder</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <h1>AI Resume Builder</h1>
-        <div id="chat-container"></div>
-        <div id="ai-loader" style="display: none;">
-            <span class="spinner"></span>
-            <span>Generating your resume please wait...</span>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder - Create Professional Resumes in Minutes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 16px 32px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chat-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .chat-header-text h2 {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .chat-header-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        #chat-container {
+            padding: 24px;
+            max-height: 400px;
+            overflow-y: auto;
+            min-height: 200px;
+            background: var(--bg-light);
+        }
+
+        #chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        #chat-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        #chat-container p {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            animation: slideIn 0.3s ease;
+        }
+
+        #chat-container p:nth-child(odd) {
+            background: white;
+            color: var(--text-primary);
+            margin-right: auto;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        #chat-container p:nth-child(even) {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .input-section {
+            padding: 24px;
+            background: white;
+            border-top: 2px solid var(--bg-light);
+        }
+
+        #start-btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        #start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        #start-btn:active {
+            transform: translateY(0);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        #user-input, #dropdown, #search-input {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        #user-input:focus, #dropdown:focus, #search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        #send-btn, #download-btn {
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        #send-btn:hover, #download-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        #download-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #skills-section {
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        #skills-section > p {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        #skills-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #skills-buttons button {
+            padding: 10px 20px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        #skills-buttons button:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+            transform: translateY(-2px);
+        }
+
+        #skills-buttons button.selected {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: transparent;
+            box-shadow: var(--shadow);
+        }
+
+        #skills-done-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #skills-done-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        #ai-loader {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        #ai-loader span:last-child {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .feature-pills {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
+            .logo-text {
+                font-size: 22px;
+            }
+
+            .tagline {
+                font-size: 16px;
+            }
+
+            .chat-card {
+                border-radius: 16px;
+            }
+
+            #chat-container {
+                max-height: 300px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            #send-btn, #download-btn {
+                width: 100%;
+            }
+
+            #skills-buttons button {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">✨</div>
+                <div class="logo-text">AI Resume Builder</div>
+            </div>
+            <div class="tagline">Create professional resumes in minutes with AI assistance</div>
+            <div class="feature-pills">
+                <div class="pill">🚀 Fast & Easy</div>
+                <div class="pill">🎨 Professional</div>
+                <div class="pill">🤖 AI-Powered</div>
+            </div>
         </div>
-        <button id="start-btn">Start Resume Builder</button>
-        <input type="text" id="user-input" placeholder="type your answer...">
-        <select id="dropdown" style="display: none;"></select>
-        <input type="text" id="search-input" style="display: none;" placeholder="Type your skills">
-        <button id="send-btn">Send</button>
-        <button id="download-btn">Download pdf</button>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        
-        <div id="skills-section" style="display: none;">
-            <p>Select your skills:</p>
-            <div id="skills-buttons"></div>
-            <div id="selected-skills"></div>
-            <button id="skills-done-btn">Done</button>
+
+        <div class="chat-card">
+            <div class="chat-header">
+                <div class="chat-header-icon">💬</div>
+                <div class="chat-header-text">
+                    <h2>Let's Build Your Resume</h2>
+                    <p>Answer a few questions and let AI do the rest</p>
+                </div>
+            </div>
+
+            <div id="chat-container"></div>
+
+            <div class="input-section">
+                <div id="ai-loader">
+                    <span class="spinner"></span>
+                    <span>Generating your resume, please wait...</span>
+                </div>
+
+                <button id="start-btn">🚀 Start Building Your Resume</button>
+
+                <div class="input-group">
+                    <input type="text" id="user-input" placeholder="Type your answer..." style="display: none;">
+                    <select id="dropdown" style="display: none;"></select>
+                    <button id="send-btn" style="display: none;">Send ➤</button>
+                </div>
+
+                <input type="text" id="search-input" style="display: none;" placeholder="🔍 Search skills...">
+
+                <div id="skills-section" style="display: none;">
+                    <p>Select your skills:</p>
+                    <div id="skills-buttons"></div>
+                    <button id="skills-done-btn">✓ Done</button>
+                </div>
+
+                <button id="download-btn" style="display: none;">📥 Download PDF Resume</button>
+            </div>
         </div>
-        
-        <script type="module" src="./js/main.js"></script>
-    </body>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script type="module" src="./js/main.js"></script>
+</body>
 </html>
