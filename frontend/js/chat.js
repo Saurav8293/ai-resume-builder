@@ -17,18 +17,31 @@ function start() {
 
 function handleAnswer() {
     const answer = ui.userInput.value.trim();
-    if (!answer)
-        return;
-    addMessage("You", answer);
+    const currentQ = questions[state.currentQuestionIndex];
 
-    const key = questions[state.currentQuestionIndex].key;
-    state.resumeData[key] = answer;
+    // Validation logic
+    const validation = validateInput(answer, currentQ.key)
+    if (!validation.isValid) {
+            addMessage("AI", `${validation.message}`);
+            return; // Don't proceed if invalid
+        }
+    
+    addMessage("You", answer);
+    
+    const key = currentQ.key;
+    
+    // Special handling for comma-separated inputs
+    if (key === "project1Tech" || key === "project2Tech") {
+        state.resumeData[key] = answer.split(",").map(s => s.trim()).filter(Boolean);
+    } else {
+        state.resumeData[key] = answer;
+    }
 
     ui.userInput.value = "";
     state.currentQuestionIndex++;
     askQuestion();
 }
-
+.
 export async function askQuestion() {
     if (questions.length <= state.currentQuestionIndex) {
         addMessage("AI", "Thank you! I have collected all your details.")
@@ -108,4 +121,63 @@ function handleDropdownChange() {
     state.currentQuestionIndex++;
 
     askQuestion();
+}
+
+// Validation function banao
+function validateInput(value, key) {
+    // Empty check
+    if (!value || value.length === 0) {
+        return { isValid: false, message: "Please enter a value, it cannot be empty!" };
+    }
+    
+    // Email validation
+    if (key === "email") {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            return { isValid: false, message: "Please enter a valid email address (e.g., name@example.com)" };
+        }
+    }
+    
+    // Phone validation
+    if (key === "phone") {
+        const phoneRegex = /^[6-9]\d{9}$/; // Indian 10-digit mobile
+        if (!phoneRegex.test(value.replace(/\s+/g, ''))) {
+            return { isValid: false, message: "Please enter a valid 10-digit phone number" };
+        }
+    }
+    
+    // Name validation
+    if (key === "fullName") {
+        if (value.length < 3) {
+            return { isValid: false, message: "Name should be at least 3 characters long" };
+        }
+        if (!/^[a-zA-Z\s]+$/.test(value)) {
+            return { isValid: false, message: "Name should contain only letters and spaces" };
+        }
+    }
+    
+    // Percentage validation
+    if (key === "class10Marks" || key === "class12Marks") {
+        const marks = parseFloat(value);
+        if (isNaN(marks) || marks < 0 || marks > 100) {
+            return { isValid: false, message: "Please enter a valid percentage between 0 and 100" };
+        }
+    }
+    
+    // CGPA validation
+    if (key === "gradCGPA") {
+        const cgpa = parseFloat(value);
+        if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
+            return { isValid: false, message: "Please enter a valid CGPA between 0 and 10" };
+        }
+    }
+    
+    // Year validation (e.g-  "2020-2024")
+    if (key.includes("Years") || key.includes("Duration")) {
+        if (value.length < 4) {
+            return { isValid: false, message: "Please enter a valid duration (e.g., 2020-2024)" };
+        }
+    }
+    
+    return { isValid: true };
 }
