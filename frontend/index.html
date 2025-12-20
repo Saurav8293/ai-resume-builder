@@ -151,22 +151,26 @@
             border-radius: 12px;
             max-width: 85%;
             animation: slideIn 0.3s ease;
+            clear: both;
         }
 
-        #chat-container p:nth-child(odd) {
+        #chat-container p.ai-message {
             background: white;
             color: var(--text-primary);
-            margin-right: auto;
             border: 1px solid var(--border);
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            float: left; /* Left align */
+            margin-right: auto;
         }
 
-        #chat-container p:nth-child(even) {
+        #chat-container p.user-message {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
+            float: right; /* Right align */
             margin-left: auto;
             text-align: right;
         }
+
 
         .input-section {
             padding: 24px;

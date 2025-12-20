@@ -17,7 +17,18 @@ ui.downloadBtn.disabled = true;
 export function addMessage(sender, text) {
     const message = document.createElement('p');
     message.textContent = `${sender}: ${text}`;
+    
+    // Add class based on sender
+    if (sender === "AI" || sender === "ai") {
+        message.classList.add('ai-message');
+    } else {
+        message.classList.add('user-message');
+    }
+    
     ui.chatContainer.appendChild(message);
+    
+    // Auto scroll to bottom
+    ui.chatContainer.scrollTop = ui.chatContainer.scrollHeight;
 }
 
 // NOTE: Dropdown listener is in chat.js to avoid duplicate handlers

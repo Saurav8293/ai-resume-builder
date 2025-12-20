@@ -41,7 +41,6 @@ function handleAnswer() {
     state.currentQuestionIndex++;
     askQuestion();
 }
-.
 export async function askQuestion() {
     if (questions.length <= state.currentQuestionIndex) {
         addMessage("AI", "Thank you! I have collected all your details.")
