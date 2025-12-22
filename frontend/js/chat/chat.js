@@ -1,6 +1,6 @@
 import { ui, addMessage, showLoader } from "./ui.js";
-import { state, questions, allResumeData } from "./state.js";
-import { generateRequestToServer } from "./aiService.js";
+import { state, questions, allResumeData } from "../core/state.js";
+import { generateRequestToServer } from "../core/aiService.js";
 import { showUISkills } from "./skills.js";
 
 export function initChat() {

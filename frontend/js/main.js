@@ -1,6 +1,6 @@
-import { ui } from "./ui.js";
-import { initChat } from "./chat.js";
-import { saveResume } from "./pdf.js";
+import { ui } from "./chat/ui.js";
+import { initChat } from "./chat/chat.js";
+import { saveResume } from "./core/pdf.js";
 
 initChat();
 

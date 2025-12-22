@@ -1,5 +1,5 @@
 // aiService.js
-import { API_ENDPOINTS } from "./config.js";
+import { API_ENDPOINTS } from "../config.js";
 
 const BASE_URL = "https://ai-resume-builder-z3ct.onrender.com";
 

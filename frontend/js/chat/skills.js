@@ -1,5 +1,5 @@
 import { askQuestion } from "./chat.js";
-import { allSkills, state } from "./state.js";
+import { allSkills, state } from "../core/state.js";
 import { addMessage, ui } from "./ui.js";
 
 export function showUISkills(){
