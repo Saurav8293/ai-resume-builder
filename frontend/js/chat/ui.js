@@ -36,3 +36,17 @@ export function addMessage(sender, text) {
 export function showLoader(show) {
     ui.aiLoader.style.display = show ? "flex" : "none";
 }
+
+export function showEditorCTA(){
+    const btn = document.createElement("button");
+    btn.textContent = "Open Resume Editor"
+    btn.id = "open-editor-btn"
+    btn.style.marginTop = "12px"
+    console.log("Editor button is showing or not???");
+    btn.onclick = () => {
+        window.location.href = "/frontend/editor.html";
+    };
+
+    ui.chatContainer.appendChild(btn);
+    ui.chatContainer.scrollTop = ui.chatContainer.scrollHeight;
+}

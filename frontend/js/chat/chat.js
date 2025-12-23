@@ -2,6 +2,7 @@ import { ui, addMessage, showLoader } from "./ui.js";
 import { state, questions, allResumeData } from "../core/state.js";
 import { generateRequestToServer } from "../core/aiService.js";
 import { showUISkills } from "./skills.js";
+import { showEditorCTA } from "./ui.js";
 
 export function initChat() {
     ui.startBtn.onclick = start;
@@ -43,38 +44,38 @@ function handleAnswer() {
 }
 export async function askQuestion() {
     if (questions.length <= state.currentQuestionIndex) {
-        addMessage("AI", "Thank you! I have collected all your details.")
+        addMessage("AI", "Thanks! I’m generating your resume draft…");
         showLoader(true);
+
         ui.userInput.style.display = "none";
         ui.sendBtn.style.display = "none";
+        ui.dropdown.style.display= "none";
 
-        state.responseFromServer = await generateRequestToServer(
-            allResumeData()
-        );
-        console.log("what is present in responseFromServer?=> ", state.responseFromServer);
-        state.aiCareerObjective = state.responseFromServer.careerObjective;
-        state.aiResponsibilities = Array.isArray(state.responseFromServer.professionalExperience)
-            ? state.responseFromServer.professionalExperience.map(point => `• ${point}`).join('\n')
-            : state.responseFromServer.professionalExperience || "";
-        
-        const projects = state.responseFromServer.projects || {};
-        
-        // Convert project arrays to strings
-        state.aiProjectDescriptions.project1 = Array.isArray(projects.project1)
-            ? projects.project1.map(point => `• ${point}`).join('\n')
-            : projects.project1 || "";
+        try{
+            const result = await generateRequestToServer(
+                allResumeData()
+            );
+            console.log("Hai kuchh isme???",result);
+            state.baselineResume = result;
+            sessionStorage.setItem(
+                "baselineResume",
+                JSON.stringify(state.baselineResume)
+            );
+            console.log("what is present in baselineResume?",state.baselineResume);
+            state.optimizedResume = null;
+            state.activeVersion = "baseline";
+            showLoader(false);
+
+            addMessage("AI", "Your resume draft is ready.");
+            // Show CTA instead of auto-download
+            showEditorCTA();
             
-        state.aiProjectDescriptions.project2 = Array.isArray(projects.project2)
-            ? projects.project2.map(point => `• ${point}`).join('\n')
-            : projects.project2 || "";
-        console.log("Converted project1:", state.aiProjectDescriptions.project1);
-        console.log("Converted project2:", state.aiProjectDescriptions.project2);
-        showLoader(false);
-        addMessage("AI", "Resume ready! Click the button below to download.");
 
-        // Show download button and hide input controls
-        ui.downloadBtn.style.display = "inline-block";
-        ui.downloadBtn.disabled = false;
+        } catch (err){
+            showLoader(false);
+            addMessage("AI", " Failed to generate resume. Please try again.");
+        }
+        
         ui.userInput.style.display = "none";
         ui.sendBtn.style.display = "none";
         return;

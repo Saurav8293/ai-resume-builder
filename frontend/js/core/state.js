@@ -1,5 +1,8 @@
 export const state = {
   resumeData: {},
+  baselineResume: null, 
+  optimizedResume: null,
+  activeVersion: "base", // base | optimized (preview + Download always use activeVersion)
   currentQuestionIndex: 0,
   aiCareerObjective: "",
   aiProjectDescriptions: {
