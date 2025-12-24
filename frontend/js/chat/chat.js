@@ -8,6 +8,12 @@ export function initChat() {
     ui.startBtn.onclick = start;
     ui.sendBtn.onclick = handleAnswer;
     ui.dropdown.addEventListener("change", handleDropdownChange);
+    ui.userInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevent default form submission
+        handleAnswer();
+    }
+    });
 }
 
 function start() {
