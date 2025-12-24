@@ -80,7 +80,7 @@ export function saveResume() {
         addSpace(5);
     }
     
-    // ===== PROFESSIONAL EXPERIENCE =====
+// ===== PROFESSIONAL EXPERIENCE =====
     if (state.resumeData.expRole) {
         addSectionHeading("Professional Experience");
         
@@ -98,8 +98,14 @@ export function saveResume() {
         pdf.text(duration, pageWidth - margin - durWidth, y);
         y += 6;
         
-        if (state.aiResponsibilities) {
-            addText(state.aiResponsibilities, 9.5);
+        // Add bullet points from AI
+        const expBullets = state.baselineResume?.professionalExperience || [];
+        if (expBullets.length > 0) {
+            expBullets.forEach(bullet => {
+                checkSpace(8);
+                addText(`• ${bullet}`, 9.5, "normal", 0);
+                addSpace(2);
+            });
         }
         addSpace(5);
     }
@@ -177,8 +183,13 @@ export function saveResume() {
             addText(state.resumeData.project1Name, 10, "bold");
             addSpace(3);
             
-            if (state.aiProjectDescriptions.project1) {
-                addText(state.aiProjectDescriptions.project1, 9.5);
+            const project1Bullets = state.baselineResume?.projects?.project1 || [];
+            if (project1Bullets.length > 0) {
+                project1Bullets.forEach(bullet => {
+                    checkSpace(8);
+                    addText(`• ${bullet}`, 9.5, "normal", 0);
+                    addSpace(2);
+                });
             }
             addSpace(6);
         }
@@ -189,12 +200,16 @@ export function saveResume() {
             addText(state.resumeData.project2Name, 10, "bold");
             addSpace(3);
             
-            if (state.aiProjectDescriptions.project2) {
-                addText(state.aiProjectDescriptions.project2, 9.5);
+            const project2Bullets = state.baselineResume?.projects?.project2 || [];
+            if (project2Bullets.length > 0) {
+                project2Bullets.forEach(bullet => {
+                    checkSpace(8);
+                    addText(`• ${bullet}`, 9.5, "normal", 0);
+                    addSpace(2);
+                });
             }
         }
     }
-    
     // Footer (only if multiple pages)
     const totalPages = pdf.internal.getNumberOfPages();
     if (totalPages > 1) {

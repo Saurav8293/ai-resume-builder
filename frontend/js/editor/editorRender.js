@@ -84,7 +84,10 @@ function renderToDOM(resume) {
             <span style="float:right">${resume.experience.duration}</span>
         </p>
         <ul>
-            ${resume.experience.bullets.map(b => `<li>${b}</li>`).join("")}
+            ${resume.experience.bullets && resume.experience.bullets.length > 0 
+                ? resume.experience.bullets.map(b => `<li>${b}</li>`).join("") 
+                : '<li>No responsibilities available</li>'
+            }
         </ul>
 
         <h2>Education</h2>
@@ -99,12 +102,15 @@ function renderToDOM(resume) {
         }
 
         <h2>Projects</h2>
-    ${resume.projects.map(p => `
-      <h3>${p.name}</h3>
-      <ul>
-        ${p.bullets.map(b => `<li>${b}</li>`).join("")}
-      </ul>
-    `).join("")}
+        ${resume.projects.map(p => `
+        <h3>${p.name}</h3>
+        <ul>
+            ${p.bullets && p.bullets.length > 0 
+                ? p.bullets.map(b => `<li>${b}</li>`).join("") 
+                : '<li>No description available</li>'
+            }
+        </ul>
+        `).join("")}
 
     <h2>Skills</h2>
     <p>${resume.skills.join(" • ")}</p>
