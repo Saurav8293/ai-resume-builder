@@ -42,9 +42,10 @@ function handleAnswer() {
     state.currentQuestionIndex++;
     askQuestion();
 }
+
 export async function askQuestion() {
     if (questions.length <= state.currentQuestionIndex) {
-        addMessage("AI", "Thanks! I’m generating your resume draft…");
+        addMessage("AI", "Thanks! I'm generating your resume draft…");
         showLoader(true);
 
         ui.userInput.style.display = "none";
@@ -55,25 +56,25 @@ export async function askQuestion() {
             const result = await generateRequestToServer(
                 allResumeData()
             );
-            console.log("Hai kuchh isme???",result);
+            console.log("AI Response:", result);
             state.baselineResume = result;
-            sessionStorage.setItem(
-                "baselineResume",
-                JSON.stringify(state.baselineResume)
-            );
-            console.log("what is present in baselineResume?",state.baselineResume);
+            
+            sessionStorage.setItem("resumeData", JSON.stringify(state.resumeData));
+            sessionStorage.setItem("baselineResume", JSON.stringify(state.baselineResume));
+            
+            console.log("Saved to sessionStorage:", state.resumeData);
+            
             state.optimizedResume = null;
             state.activeVersion = "baseline";
             showLoader(false);
 
             addMessage("AI", "Your resume draft is ready.");
-            // Show CTA instead of auto-download
             showEditorCTA();
-            
 
         } catch (err){
             showLoader(false);
-            addMessage("AI", " Failed to generate resume. Please try again.");
+            addMessage("AI", "Failed to generate resume. Please try again.");
+            console.error("Generation error:", err);
         }
         
         ui.userInput.style.display = "none";
@@ -123,7 +124,7 @@ function handleDropdownChange() {
     askQuestion();
 }
 
-// Validation function banao
+// Validation function
 function validateInput(value, key) {
     // Empty check
     if (!value || value.length === 0) {
@@ -172,7 +173,7 @@ function validateInput(value, key) {
         }
     }
     
-    // Year validation (e.g-  "2020-2024")
+    // Year validation
     if (key.includes("Years") || key.includes("Duration")) {
         if (value.length < 4) {
             return { isValid: false, message: "Please enter a valid duration (e.g., 2020-2024)" };
