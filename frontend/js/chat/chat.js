@@ -58,10 +58,20 @@ export async function askQuestion() {
             );
             console.log("AI Response:", result);
             state.baselineResume = result;
-            
+            state.aiCareerObjective = result.careerObjective || "";
+            state.aiResponsibilities = result.professionalExperience || [];
+            state.aiProjectDescriptions = {
+                project1: result.projects?.project1 || [],
+                project2: result.projects?.project2 || []
+            };
+                        
             sessionStorage.setItem("resumeData", JSON.stringify(state.resumeData));
             sessionStorage.setItem("baselineResume", JSON.stringify(state.baselineResume));
-            
+            sessionStorage.setItem("aiContent", JSON.stringify({
+                aiCareerObjective: state.aiCareerObjective,
+                aiResponsibilities: state.aiResponsibilities,
+                aiProjectDescriptions: state.aiProjectDescriptions
+            }));
             console.log("Saved to sessionStorage:", state.resumeData);
             
             state.optimizedResume = null;

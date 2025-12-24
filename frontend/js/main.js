@@ -3,5 +3,3 @@ import { initChat } from "./chat/chat.js";
 import { saveResume } from "./core/pdf.js";
 
 initChat();
-
-ui.downloadBtn.onclick = saveResume;

@@ -4,7 +4,6 @@ export const ui = {
     chatContainer: document.getElementById('chat-container'),
     userInput: document.getElementById('user-input'),
     sendBtn: document.getElementById('send-btn'),
-    downloadBtn: document.getElementById('download-btn'),
     dropdown: document.getElementById('dropdown'),
     searchInput: document.getElementById('search-input'),
     skillsButtonDiv: document.getElementById('skills-buttons'),
@@ -12,7 +11,6 @@ export const ui = {
     skillsDoneBtn: document.getElementById('skills-done-btn'),
     aiLoader: document.getElementById('ai-loader'),
 };
-ui.downloadBtn.disabled = true;
 
 export function addMessage(sender, text) {
     const message = document.createElement('p');
