@@ -2,190 +2,10 @@
 <html>
 <head>
     <title>Resume Editor</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-
-        #editor-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        #form-panel {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            max-height: 800px;
-            overflow-y: auto;
-        }
-
-        #form-panel h3 {
-            margin-top: 20px;
-            margin-bottom: 15px;
-            color: #6366f1;
-            font-size: 18px;
-            border-bottom: 2px solid #6366f1;
-            padding-bottom: 5px;
-        }
-
-        #form-panel label {
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        #form-panel input,
-        #form-panel textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
-            font-size: 14px;
-        }
-
-        #form-panel textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        #form-panel input:focus,
-        #form-panel textarea:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        #preview-panel {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        #resume-preview {
-            background: white;
-            padding: 30px;
-            min-height: 600px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        #resume-preview h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #1e293b;
-        }
-
-        #resume-preview h2 {
-            font-size: 20px;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            color: #334155;
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
-        }
-
-        #resume-preview h3 {
-            font-size: 16px;
-            margin-top: 15px;
-            margin-bottom: 8px;
-            color: #475569;
-        }
-
-        #resume-preview p {
-            margin-bottom: 10px;
-            line-height: 1.6;
-            color: #334155;
-        }
-
-        #resume-preview ul {
-            margin: 10px 0;
-            padding-left: 25px;
-        }
-
-        #resume-preview li {
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-
-        #resume-preview hr {
-            margin: 15px 0;
-            border: none;
-            border-top: 2px solid #333;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-
-        #download-btn {
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            color: white;
-            flex: 1;
-        }
-
-        #rewrite-btn {
-            background: #10b981;
-            color: white;
-            flex: 1;
-        }
-
-        #ats-btn {
-            background: #f59e0b;
-            color: white;
-            flex: 1;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        @media (max-width: 1024px) {
-            #editor-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
-<body>
+<body class="editor-page">
     <h2>Resume Editor</h2>
-    
     <div id="editor-layout">
         <!-- LEFT: Edit Form -->
         <div id="form-panel">
@@ -247,13 +67,26 @@
 
             <div class="button-group">
                 <button id="download-btn">📥 Download PDF</button>
-                <button id="rewrite-btn">🔄 Optimize for JD</button>
                 <button id="ats-btn">✓ Check ATS</button>
+                <button id="rewrite-btn">🔄 Optimize for JD</button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="./js/editor/editor.js"></script>
+    <div id="ats-modal" class="modal">
+        <div class="modal-content">
+            <span id="ats-close-btn" class="close-btn">&times;</span>
+            <h2>Enter Job Description</h2>
+            <textarea id="ats-job-desc"
+                      placeholder="Paste the job Description here..."
+                      rows="6"
+            ></textarea>
+            <button id="ats-submit-btn">Check ATS Compatibility</button>
+        </div>
+
+    </div>
+
+    <script type="module" src="./js/editor/editorMain.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>

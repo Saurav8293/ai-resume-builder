@@ -1,5 +1,4 @@
-import { saveResume } from "../core/pdf.js";
-import { state } from "../core/state.js"
+import { state } from "../core/state.js";
 export function renderPreview(baselineAIContent) {
 
     const ai = state.activeVersion === "optimized" && state.optimizedResume ? state.optimizedResume : baselineAIContent;
