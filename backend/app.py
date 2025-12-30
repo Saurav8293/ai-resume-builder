@@ -1,6 +1,9 @@
 from flask import Flask
 from flask_cors import CORS
 from routes.resume_routes import resume_bp
+from routes.ats_routes import ats_bp
+app.register_blueprint(ats_bp)
+
 
 app = Flask(__name__)
 CORS(app)
