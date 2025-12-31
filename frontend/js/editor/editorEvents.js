@@ -45,9 +45,48 @@ export function initEditorEvents() {
         document.getElementById("ats-modal").style.display = "none";
     };
 
-    document.getElementById("ats-submit-btn").onclick = () => {
-        
+    document.getElementById("ats-submit-btn").onclick = async () => {
+    const jobDesc = document.getElementById("ats-job-desc").value.trim();
+
+    if (!jobDesc) {
+        alert("Please paste a job description");
+        return;
+    }
+
+    // Get FULL resume text from preview
+    const resumeText = document.getElementById("resume-preview").innerText;
+
+    try {
+        //  Call ATS backend
+        const response = await fetch("http://localhost:5000/api/ats/analyze", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                resume: resumeText,
+                jobDescription: jobDesc
+            })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || "ATS analysis failed");
+        }
+
+        //  Show minimal ATS result
+        alert(
+            `ATS Match Score: ${result.similarity_score}%\n\n` +
+            `Missing Skills:\n- ${result.analysis.missing_skills.join("\n- ")}`
+        );
+
+    } catch (err) {
+        console.error("ATS Error:", err);
+        alert("Failed to analyze ATS compatibility");
+    }
     };
+
 
 }
 
