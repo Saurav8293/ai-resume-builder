@@ -4,6 +4,8 @@ from routes.resume_routes import resume_bp
 from routes.ats_routes import ats_bp
 app.register_blueprint(ats_bp)
 
+from routes.optimize_routes import optimize_bp
+app.register_blueprint(optimize_bp)
 
 app = Flask(__name__)
 CORS(app)
