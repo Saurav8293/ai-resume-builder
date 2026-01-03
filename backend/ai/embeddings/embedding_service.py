@@ -1,4 +1,5 @@
 import google.generativeai as genai
+from utils.text_utils import normalize_text
 import numpy as np
 from typing import List
 import os
@@ -25,16 +26,26 @@ class EmbeddingService:
         api_key = os.getenv("GEMINI_API_KEY")
         genai.configure(api_key=api_key)
         self.model_name = model_name
-        print(f"✅ EmbeddingService ready: {model_name}")
+        self._cache = {}
+        print(f" EmbeddingService ready: {model_name}")
     
-    def embed(self, text: str) -> List[float]:
-        """Convert text to vector of 768 numbers."""
-        result = genai.embed_content(
-            model=self.model_name,
-            content=text,
-            task_type="retrieval_document"
-        )
-        return result['embedding']
+def embed(self, text: str) -> list:
+    normalized = normalize_text(text)
+
+    #  Cache hit
+    if normalized in self._cache:
+        return self._cache[normalized]
+
+    result = genai.embed_content(
+        model=self.model_name,
+        content=normalized,
+        task_type="retrieval_document"
+    )
+
+    #  Cache store
+    self._cache[normalized] = result["embedding"]
+    return result["embedding"]
+
     
     def embed_batch(self, texts: List[str]) -> List[List[float]]:
         """Embed multiple texts at once (more efficient)."""
