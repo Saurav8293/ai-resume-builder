@@ -1,5 +1,7 @@
 from ai.llm.gemini_client import GeminiClient
 from ai.embeddings.embedding_service import EmbeddingService
+import hashlib
+from utils.text_utils import normalize_text
 
 class ATSService:
     """
@@ -14,17 +16,23 @@ class ATSService:
     def __init__(self):
         self.llm = GeminiClient()
         self.embeddings = EmbeddingService()
+        self._cache = {}
 
 
     def analyze(self, resume_text: str, job_description: str) -> dict:
-    """
-    Perform full ATS analysis using GenAI techniques.
-    """
-    # Semantic similarity score
-    similarity_score = self.embeddings.similarity(
-        resume_text,
-        job_description
-    )
+    #  Normalize inputs
+    resume_norm = normalize_text(resume_text)
+    jd_norm = normalize_text(job_description)
+
+    #  Cache key (stable + cheap)
+    cache_key = hashlib.sha256(
+        (resume_norm + jd_norm).encode("utf-8")
+    ).hexdigest()
+
+    #  Cache hit
+    if cache_key in self._cache:
+        return self._cache[cache_key]
+
 
     # Extract keywords from Job Description
     keywords = self._extract_keywords(job_description)
@@ -35,6 +43,15 @@ class ATSService:
         job_description,
         keywords
     )
+    result = {
+    "similarity_score": round(similarity_score * 100, 1),
+    "keywords": keywords,
+    "analysis": analysis
+}
+
+# Cache store
+self._cache[cache_key] = result
+return result
 
     return {
         "similarity_score": round(similarity_score * 100, 1),
