@@ -49,15 +49,15 @@ class ATSService:
     "analysis": analysis
 }
 
-# Cache store
-self._cache[cache_key] = result
-return result
+    # Cache store
+    self._cache[cache_key] = result
+    return result
 
-    return {
-        "similarity_score": round(similarity_score * 100, 1),
-        "keywords": keywords,
-        "analysis": analysis
-    }
+        return {
+            "similarity_score": round(similarity_score * 100, 1),
+            "keywords": keywords,
+            "analysis": analysis
+        }
 
     def _extract_keywords(self, job_description: str) -> dict:
     """
@@ -76,7 +76,7 @@ return result
     Job Description:
     {job_description}
     """
-                return self.llm.generate_json(prompt)
+    return self.llm.generate_json(prompt)
 
     def _analyze_match(
         self,
@@ -87,7 +87,7 @@ return result
         """
         Analyze resume match quality and suggest improvements.
         """
-                prompt = f"""
+        prompt = f"""
         Analyze the resume against the job description.
 
         Return ONLY valid JSON:
