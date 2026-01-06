@@ -2,6 +2,7 @@ from ai.llm.gemini_client import GeminiClient
 from ai.embeddings.embedding_service import EmbeddingService
 import hashlib
 from utils.text_utils import normalize_text
+from utils.text_utils import truncate_text
 
 class ATSService:
     """
@@ -87,28 +88,29 @@ class ATSService:
         """
         Analyze resume match quality and suggest improvements.
         """
-        prompt = f"""
-        Analyze the resume against the job description.
+       prompt = f"""
+Analyze the resume against the job description.
 
-        Return ONLY valid JSON:
-        {{
-        "score": 0-100,
-        "missing_skills": ["skill1", "skill2"],
-        "improvements": [
-            {{
-            "section": "Skills / Experience / Projects",
-            "suggestion": "Specific improvement suggestion"
-            }}
-        ]
-        }}
+Return ONLY valid JSON:
+{{
+  "score": 0-100,
+  "missing_skills": ["skill1", "skill2"],
+  "improvements": [
+    {{
+      "section": "Skills / Experience / Projects",
+      "suggestion": "Specific improvement suggestion"
+    }}
+  ]
+}}
 
-        Resume:
-        {resume_text[:1500]}
+Resume:
+{resume_limited}
 
-        Job Description:
-        {job_description[:1500]}
+Job Description:
+{jd_limited}
 
-        Required Skills:
-        {keywords.get("required", [])}
-        """
+Required Skills:
+{keywords.get("required", [])}
+"""
+
                 return self.llm.generate_json(prompt)
