@@ -30,34 +30,25 @@ class GeminiClient(BaseLLMClient):
         self.model_name = model_name
         print(f" GeminiClient ready: {model_name}")
     
+    @with_retry
     def generate(self, prompt: str) -> str:
-        """Simple text generation."""
-        try:
-            response = self.model.generate_content(prompt)
-            return response.text.strip()
-        except Exception as e:
-            print(f" Gemini error: {e}")
-            raise
+        response = self.model.generate_content(prompt)
+        return response.text.strip()
+
     
+    @with_retry
     def generate_json(self, prompt: str) -> dict:
-        """
-        Generate and parse JSON response.
-        
-        CONCEPT: LLMs sometimes wrap JSON in markdown code blocks.
-        We use regex to extract just the JSON part.
-        """
-        raw = self.generate(prompt)
-        
-        # Try to extract JSON from ```json ... ``` blocks
-        match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', raw, re.DOTALL)
-        json_text = match.group(1) if match else raw
-        
-        try:
-            return json.loads(json_text)
-        except json.JSONDecodeError as e:
-            print(f" JSON parse failed: {e}")
-            print(f"Raw response: {raw}")
-            raise ValueError(f"Invalid JSON from LLM: {e}")
+        raw_text = self.generate(prompt)
+
+        match = re.search(
+            r'```(?:json)?\s*(\{.*?\})\s*```',
+            raw_text,
+            re.DOTALL
+        )
+        json_text = match.group(1) if match else raw_text
+
+        return json.loads(json_text)
+
     
     def stream(self, prompt: str) -> Iterator[str]:
         """
@@ -92,5 +83,20 @@ def with_retry(func, max_attempts: int = 3):
                 if attempt == max_attempts - 1:
                     raise
                 print(f"Retry {attempt + 1}/{max_attempts}...")
+        return None
+    return wrapper
+
+def with_retry(func, max_attempts: int = 3):
+    """
+    Retry wrapper for LLM calls.
+    Prevents transient Gemini failures from breaking the system.
+    """
+    def wrapper(*args, **kwargs):
+        for attempt in range(max_attempts):
+            try:
+                return func(*args, **kwargs)
+            except Exception:
+                if attempt == max_attempts - 1:
+                    raise
         return None
     return wrapper
