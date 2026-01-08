@@ -2,6 +2,8 @@ import google.generativeai as genai
 import json
 import re
 import os
+import signal
+
 from typing import Iterator
 from dotenv import load_dotenv
 from .base_client import BaseLLMClient
@@ -32,8 +34,14 @@ class GeminiClient(BaseLLMClient):
     
     @with_retry
     def generate(self, prompt: str) -> str:
-        response = self.model.generate_content(prompt)
-        return response.text.strip()
+        signal.signal(signal.SIGALRM, _timeout_handler)
+        signal.alarm(15)  # ⏱️ max 15 seconds
+
+        try:
+            response = self.model.generate_content(prompt)
+            return response.text.strip()
+        finally:
+            signal.alarm(0)  # disable alarm
 
     
     @with_retry
@@ -100,3 +108,9 @@ def with_retry(func, max_attempts: int = 3):
                     raise
         return None
     return wrapper
+class TimeoutError(Exception):
+    pass
+
+
+def _timeout_handler(signum, frame):
+    raise TimeoutError("LLM call timed out")
