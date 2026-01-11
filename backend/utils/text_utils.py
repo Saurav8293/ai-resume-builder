@@ -19,3 +19,7 @@ def truncate_text(text: str, max_chars: int) -> str:
 # GenAI utility placeholder
 def is_empty_text(text: str) -> bool:
     return not bool(text and text.strip())
+
+# Simple length helper (future GenAI usage)
+def text_length(text: str) -> int:
+    return len(text) if text else 0
