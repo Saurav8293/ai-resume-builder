@@ -23,3 +23,7 @@ def is_empty_text(text: str) -> bool:
 # Simple length helper (future GenAI usage)
 def text_length(text: str) -> int:
     return len(text) if text else 0
+
+# Normalize newlines for consistent GenAI text handling
+def normalize_newlines(text: str) -> str:
+    return text.replace("\r\n", "\n").replace("\r", "\n") if text else ""
