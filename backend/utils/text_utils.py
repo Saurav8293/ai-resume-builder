@@ -27,3 +27,9 @@ def text_length(text: str) -> int:
 # Normalize newlines for consistent GenAI text handling
 def normalize_newlines(text: str) -> str:
     return text.replace("\r\n", "\n").replace("\r", "\n") if text else ""
+
+# Safe text preview helper (for logs / debugging)
+def preview_text(text: str, max_chars: int = 100) -> str:
+    if not text:
+        return ""
+    return text[:max_chars]
