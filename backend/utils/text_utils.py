@@ -33,3 +33,7 @@ def preview_text(text: str, max_chars: int = 100) -> str:
     if not text:
         return ""
     return text[:max_chars]
+
+# Whitespace cleanup helper (future GenAI use)
+def collapse_spaces(text: str) -> str:
+    return " ".join(text.split()) if text else ""
