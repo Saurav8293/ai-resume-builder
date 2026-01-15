@@ -37,3 +37,6 @@ def preview_text(text: str, max_chars: int = 100) -> str:
 # Whitespace cleanup helper (future GenAI use)
 def collapse_spaces(text: str) -> str:
     return " ".join(text.split()) if text else ""
+
+def exceeds_limit(text: str, limit: int) -> bool:
+    return bool(text) and len(text) > limit
