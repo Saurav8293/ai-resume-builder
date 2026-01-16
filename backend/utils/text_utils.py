@@ -40,3 +40,6 @@ def collapse_spaces(text: str) -> str:
 
 def exceeds_limit(text: str, limit: int) -> bool:
     return bool(text) and len(text) > limit
+
+def to_single_line(text: str) -> str:
+    return text.replace("\n", " ") if text else ""
