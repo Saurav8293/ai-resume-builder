@@ -43,3 +43,7 @@ def exceeds_limit(text: str, limit: int) -> bool:
 
 def to_single_line(text: str) -> str:
     return text.replace("\n", " ") if text else ""
+
+# Returns True if string contains any digits
+def has_numbers(text: str) -> bool:
+    return any(ch.isdigit() for ch in text) if text else False
