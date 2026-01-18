@@ -47,3 +47,13 @@ def to_single_line(text: str) -> str:
 # Returns True if string contains any digits
 def has_numbers(text: str) -> bool:
     return any(ch.isdigit() for ch in text) if text else False
+
+# Count words in a text (useful for debugging)
+def word_count(text: str) -> int:
+    return len(text.split()) if text else 0
+
+# Ensure text ends with a newline (useful for logs/files)
+def ensure_trailing_newline(text: str) -> str:
+    if not text:
+        return ""
+    return text if text.endswith("\n") else text + "\n"
