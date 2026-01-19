@@ -57,3 +57,7 @@ def ensure_trailing_newline(text: str) -> str:
     if not text:
         return ""
     return text if text.endswith("\n") else text + "\n"
+
+# Reverse text (debug helper, not used anywhere)
+def reverse_text(text: str) -> str:
+    return text[::-1] if text else ""
