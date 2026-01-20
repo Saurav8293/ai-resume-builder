@@ -61,3 +61,8 @@ def ensure_trailing_newline(text: str) -> str:
 # Reverse text (debug helper, not used anywhere)
 def reverse_text(text: str) -> str:
     return text[::-1] if text else ""
+
+# Convert text to lowercase safely
+def to_lower(text: str) -> str:
+    return text.lower() if text else ""
+
