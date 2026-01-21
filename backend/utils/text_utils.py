@@ -66,3 +66,6 @@ def reverse_text(text: str) -> str:
 def to_lower(text: str) -> str:
     return text.lower() if text else ""
 
+# Convert text to uppercase safely
+def to_upper(text: str) -> str:
+    return text.upper() if text else ""
