@@ -69,3 +69,7 @@ def to_lower(text: str) -> str:
 # Convert text to uppercase safely
 def to_upper(text: str) -> str:
     return text.upper() if text else ""
+
+# Safely get first n characters of text
+def first_n(text: str, n: int) -> str:
+    return text[:n] if text else ""
