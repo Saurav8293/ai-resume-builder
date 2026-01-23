@@ -73,3 +73,8 @@ def to_upper(text: str) -> str:
 # Safely get first n characters of text
 def first_n(text: str, n: int) -> str:
     return text[:n] if text else ""
+
+
+# Safely get the last n characters of text
+def last_n(text: str, n: int) -> str:
+    return text[-n:] if text else ""
