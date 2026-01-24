@@ -78,3 +78,7 @@ def first_n(text: str, n: int) -> str:
 # Safely get the last n characters of text
 def last_n(text: str, n: int) -> str:
     return text[-n:] if text else ""
+
+# Check if text is empty or just whitespace
+def is_blank(text: str) -> bool:
+    return not text or text.strip() == ""
