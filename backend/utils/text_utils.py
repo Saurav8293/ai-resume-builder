@@ -82,3 +82,7 @@ def last_n(text: str, n: int) -> str:
 # Check if text is empty or just whitespace
 def is_blank(text: str) -> bool:
     return not text or text.strip() == ""
+
+# Remove leading and trailing quotes from text
+def strip_quotes(text: str) -> str:
+    return text.strip('"').strip("'") if text else ""
