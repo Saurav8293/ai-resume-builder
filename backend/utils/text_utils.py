@@ -86,3 +86,7 @@ def is_blank(text: str) -> bool:
 # Remove leading and trailing quotes from text
 def strip_quotes(text: str) -> str:
     return text.strip('"').strip("'") if text else ""
+
+# Safely repeat text N times
+def repeat_text(text: str, n: int) -> str:
+    return (text * n) if text else ""
