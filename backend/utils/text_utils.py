@@ -90,3 +90,7 @@ def strip_quotes(text: str) -> str:
 # Safely repeat text N times
 def repeat_text(text: str, n: int) -> str:
     return (text * n) if text else ""
+
+# Return True if text contains any alphabetic characters
+def has_letters(text: str) -> bool:
+    return any(ch.isalpha() for ch in text) if text else False
