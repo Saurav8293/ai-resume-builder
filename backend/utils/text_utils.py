@@ -94,3 +94,7 @@ def repeat_text(text: str, n: int) -> str:
 # Return True if text contains any alphabetic characters
 def has_letters(text: str) -> bool:
     return any(ch.isalpha() for ch in text) if text else False
+
+# Safely remove all newline characters
+def remove_newlines(text: str) -> str:
+    return text.replace("\n", "") if text else ""
