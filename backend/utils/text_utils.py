@@ -98,3 +98,7 @@ def has_letters(text: str) -> bool:
 # Safely remove all newline characters
 def remove_newlines(text: str) -> str:
     return text.replace("\n", "") if text else ""
+
+# Return the number of lines in the text
+def line_count(text: str) -> int:
+    return text.count("\n") + 1 if text else 0
