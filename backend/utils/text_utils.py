@@ -102,3 +102,7 @@ def remove_newlines(text: str) -> str:
 # Return the number of lines in the text
 def line_count(text: str) -> int:
     return text.count("\n") + 1 if text else 0
+
+# Return text in title-case (each word capitalized)
+def to_title(text: str) -> str:
+    return text.title() if text else ""
