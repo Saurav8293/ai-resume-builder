@@ -106,3 +106,7 @@ def line_count(text: str) -> int:
 # Return text in title-case (each word capitalized)
 def to_title(text: str) -> str:
     return text.title() if text else ""
+
+# Surround text with parentheses safely
+def wrap_parentheses(text: str) -> str:
+    return f"({text})" if text else ""
