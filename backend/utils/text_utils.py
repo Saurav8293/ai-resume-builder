@@ -110,3 +110,7 @@ def to_title(text: str) -> str:
 # Surround text with parentheses safely
 def wrap_parentheses(text: str) -> str:
     return f"({text})" if text else ""
+
+# Wrap text with square brackets safely
+def wrap_brackets(text: str) -> str:
+    return f"[{text}]" if text else ""
