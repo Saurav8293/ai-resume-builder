@@ -114,3 +114,7 @@ def wrap_parentheses(text: str) -> str:
 # Wrap text with square brackets safely
 def wrap_brackets(text: str) -> str:
     return f"[{text}]" if text else ""
+
+# Wrap text with curly braces safely
+def wrap_braces(text: str) -> str:
+    return f"{{{text}}}" if text else ""
