@@ -118,3 +118,7 @@ def wrap_brackets(text: str) -> str:
 # Wrap text with curly braces safely
 def wrap_braces(text: str) -> str:
     return f"{{{text}}}" if text else ""
+
+# Wrap text with angle brackets safely
+def wrap_angles(text: str) -> str:
+    return f"<{text}>" if text else ""
