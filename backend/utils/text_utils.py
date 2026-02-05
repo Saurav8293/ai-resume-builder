@@ -122,3 +122,7 @@ def wrap_braces(text: str) -> str:
 # Wrap text with angle brackets safely
 def wrap_angles(text: str) -> str:
     return f"<{text}>" if text else ""
+
+# Remove all digits from the text safely
+def remove_numbers(text: str) -> str:
+    return ''.join(ch for ch in text if not ch.isdigit()) if text else ""
