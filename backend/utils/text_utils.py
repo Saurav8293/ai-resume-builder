@@ -126,3 +126,8 @@ def wrap_angles(text: str) -> str:
 # Remove all digits from the text safely
 def remove_numbers(text: str) -> str:
     return ''.join(ch for ch in text if not ch.isdigit()) if text else ""
+
+
+# Return text reversed safely
+def reverse_text(text: str) -> str:
+    return text[::-1] if text else ""
