@@ -131,4 +131,7 @@ def remove_numbers(text: str) -> str:
 def reverse_text(text: str) -> str:
     return text[::-1] if text else ""
 
-Next streak commi
+# Convert text to kebab-case safely
+def to_kebab_case(text: str) -> str:
+    return text.replace(" ", "-").lower() if text else ""
+
