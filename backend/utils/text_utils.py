@@ -138,3 +138,7 @@ def to_kebab_case(text: str) -> str:
 # Convert text to uppercase safely
 def safe_upper(text: str) -> str:
     return text.upper() if text else ""
+
+# Convert text to lowercase safely
+def safe_lower(text: str) -> str:
+    return text.lower() if text else ""
