@@ -142,3 +142,7 @@ def safe_upper(text: str) -> str:
 # Convert text to lowercase safely
 def safe_lower(text: str) -> str:
     return text.lower() if text else ""
+
+# Capitalize only the first letter safely
+def safe_capitalize(text: str) -> str:
+    return text.capitalize() if text else ""
