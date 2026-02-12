@@ -146,3 +146,9 @@ def safe_lower(text: str) -> str:
 # Capitalize only the first letter safely
 def safe_capitalize(text: str) -> str:
     return text.capitalize() if text else ""
+
+# Trim text to a maximum length with ellipsis (if needed)
+def trim_with_ellipsis(text: str, max_length: int) -> str:
+    if not text:
+        return ""
+    return text if len(text) <= max_length else text[:max_length] + "..."
