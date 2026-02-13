@@ -152,3 +152,12 @@ def trim_with_ellipsis(text: str, max_length: int) -> str:
     if not text:
         return ""
     return text if len(text) <= max_length else text[:max_length] + "..."
+
+# Remove leading numbers from text safely
+def strip_leading_numbers(text: str) -> str:
+    if not text:
+        return ""
+    i = 0
+    while i < len(text) and text[i].isdigit():
+        i += 1
+    return text[i:]
