@@ -161,3 +161,12 @@ def strip_leading_numbers(text: str) -> str:
     while i < len(text) and text[i].isdigit():
         i += 1
     return text[i:]
+
+# Remove trailing numbers from text safely
+def strip_trailing_numbers(text: str) -> str:
+    if not text:
+        return ""
+    i = len(text) - 1
+    while i >= 0 and text[i].isdigit():
+        i -= 1
+    return text[:i + 1]
