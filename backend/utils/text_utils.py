@@ -170,3 +170,8 @@ def strip_trailing_numbers(text: str) -> str:
     while i >= 0 and text[i].isdigit():
         i -= 1
     return text[:i + 1]
+
+# Check if text starts with a digit
+def starts_with_number(text: str) -> bool:
+    return text[0].isdigit() if text else False
+
