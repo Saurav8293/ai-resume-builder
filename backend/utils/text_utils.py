@@ -178,3 +178,7 @@ def starts_with_number(text: str) -> bool:
 # Check if text ends with a digit
 def ends_with_number(text: str) -> bool:
     return text[-1].isdigit() if text else False
+
+# Check if text starts with a letter
+def starts_with_letter(text: str) -> bool:
+    return text[0].isalpha() if text else False
