@@ -186,3 +186,7 @@ def starts_with_letter(text: str) -> bool:
 # Check if text ends with a letter
 def ends_with_letter(text: str) -> bool:
     return text[-1].isalpha() if text else False
+
+# Count how many digits are inside the text
+def count_digits(text: str) -> int:
+    return sum(ch.isdigit() for ch in text) if text else 0
