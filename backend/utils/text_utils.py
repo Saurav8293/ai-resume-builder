@@ -190,3 +190,7 @@ def ends_with_letter(text: str) -> bool:
 # Count how many digits are inside the text
 def count_digits(text: str) -> int:
     return sum(ch.isdigit() for ch in text) if text else 0
+
+# Count how many alphabetic characters are in the text
+def count_letters(text: str) -> int:
+    return sum(ch.isalpha() for ch in text) if text else 0
