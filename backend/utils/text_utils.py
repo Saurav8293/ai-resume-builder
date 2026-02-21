@@ -194,3 +194,7 @@ def count_digits(text: str) -> int:
 # Count how many alphabetic characters are in the text
 def count_letters(text: str) -> int:
     return sum(ch.isalpha() for ch in text) if text else 0
+
+# Count how many spaces appear in the text
+def count_spaces(text: str) -> int:
+    return text.count(" ") if text else 0
