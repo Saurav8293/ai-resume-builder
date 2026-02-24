@@ -202,3 +202,4 @@ def count_spaces(text: str) -> int:
 # Count how many uppercase letters appear in the text
 def count_uppercase(text: str) -> int:
     return sum(ch.isupper() for ch in text) if text else 0
+    hih
