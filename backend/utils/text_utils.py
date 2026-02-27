@@ -207,4 +207,3 @@ def count_uppercase(text: str) -> int:
 def count_lowercase(text: str) -> int:
     return sum(ch.islower() for ch in text) if text else 0
 
-asfc
